@@ -1,15 +1,15 @@
-if SHIELD_ALUMINUM_KEYBOARD_RIGHT
+if SHIELD_ALUMINUM_RIGHT
 
 # Name must be less than 16 characters long!
 config ZMK_KEYBOARD_NAME
-    default "AluminumKeyboard"
+    default "Aluminum"
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
 endif
 
-if SHIELD_ALUMINUM_KEYBOARD_LEFT || SHIELD_ALUMINUM_KEYBOARD_RIGHT
+if SHIELD_ALUMINUM_LEFT || SHIELD_ALUMINUM_RIGHT
 
 config ZMK_SPLIT
     default y
