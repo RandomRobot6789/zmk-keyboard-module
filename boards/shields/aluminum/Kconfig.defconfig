@@ -14,4 +14,7 @@ if SHIELD_ALUMINUM_LEFT || SHIELD_ALUMINUM_RIGHT
 config ZMK_SPLIT
     default y
 
+config SPI
+    default y
+
 endif
