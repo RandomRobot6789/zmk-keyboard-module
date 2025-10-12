@@ -1,5 +1,5 @@
-config SHIELD_ALUMINUM_KEYBOARD_LEFT
+config SHIELD_ALUMINUM_LEFT
     def_bool $(shields_list_contains,aluminum_left)
 
-config SHIELD_ALUMINUM_KEYBOARD_RIGHT
+config SHIELD_ALUMINUM_RIGHT
     def_bool $(shields_list_contains,aluminum_right)
