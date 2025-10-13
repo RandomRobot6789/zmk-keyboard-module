@@ -1,0 +1,12 @@
+file_format: "1"
+id: aluminum
+name: AluminumKeyboard
+type: shield
+url: https://github.com/RandomRobot6789/zmk-keyboard-module
+requires:
+  - nice_nano_v2
+features:
+  - keys
+siblings:
+  - aluminum_left
+  - aluminum_right
