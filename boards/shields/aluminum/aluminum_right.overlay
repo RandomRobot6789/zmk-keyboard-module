@@ -1,1 +1,13 @@
-
+&spi0 {
+    status = "okay";
+    cs-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+    shifter: 595@0 {
+        compatible = "zmk,gpio-595";
+        status = "okay";
+        gpio-controller;
+        spi-max-frequency = <10000>; /*Decreased this to 10 kHz because I used low frequency pins like a n00b*/
+        reg = <0>;
+        #gpio-cells = <2>; 
+        ngpios = <8>;
+    };
+};
