@@ -24,6 +24,13 @@
 };
 
 &spi0 {
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-1 = <&spi0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+&spi0 {
     status = "okay";
     cs-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
     shifter: 595@0 {
