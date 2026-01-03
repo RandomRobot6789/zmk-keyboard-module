@@ -21,7 +21,7 @@
         ;
 };
 
-&default_transform {
+&matrix_transform {
     col-offset = <10>;
 };
 
