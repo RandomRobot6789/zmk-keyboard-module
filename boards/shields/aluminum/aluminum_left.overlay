@@ -1,4 +1,27 @@
-/*Half of this should go in the board overlay, but I used different pins for SPI for the shift register for the left and right halves, and idk how to make the two different there*/
+/*Half of this should go in the board overlay except that I used different pins for SPI for the shift register for the left and right halves*/
+
+&kscan0 {
+    col-gpios
+        = <&gpio1 2 GPIO_ACTIVE_HIGH>
+        , <&gpio1 7 GPIO_ACTIVE_HIGH>
+        , <&gpio0 9 GPIO_ACTIVE_HIGH>
+        , <&gpio0 10 GPIO_ACTIVE_HIGH>
+        , <&gpio1 11 GPIO_ACTIVE_HIGH>
+        , <&gpio1 13 GPIO_ACTIVE_HIGH>
+        , <&gpio1 15 GPIO_ACTIVE_HIGH>
+        , <&gpio0 2 GPIO_ACTIVE_HIGH>
+        , <&gpio0 29 GPIO_ACTIVE_HIGH>
+        , <&gpio0 31 GPIO_ACTIVE_HIGH>
+        ;
+    row-gpios
+        = <&gpio0 17 GPIO_ACTIVE_HIGH>
+        , <&gpio0 20 GPIO_ACTIVE_HIGH>
+        , <&gpio0 22 GPIO_ACTIVE_HIGH>
+        , <&gpio0 24 GPIO_ACTIVE_HIGH>
+        , <&gpio1 0 GPIO_ACTIVE_HIGH>
+        , <&gpio0 11 GPIO_ACTIVE_HIGH>
+        ;
+};
 
 &pinctrl {
     /* configuration for spi0 device, default state */
