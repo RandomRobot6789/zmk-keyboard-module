@@ -1,5 +1,3 @@
-/*Half of this should go in the board overlay except that I used different pins for SPI for the shift register for the left and right halves*/
-
 &kscan0 {
     col-gpios
         = <&gpio1 2 GPIO_ACTIVE_HIGH>
