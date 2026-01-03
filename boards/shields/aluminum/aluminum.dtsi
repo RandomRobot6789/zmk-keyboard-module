@@ -32,3 +32,9 @@
         transform = <&matrix_transform>; // Label of the matrix transform for this layout
     };
 };
+
+/ {
+    chosen {
+        zmk,physical-layout = &physical_layout0;
+    };
+};
