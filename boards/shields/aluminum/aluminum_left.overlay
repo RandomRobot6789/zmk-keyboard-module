@@ -61,7 +61,7 @@
         gpio-controller;
         spi-max-frequency = <10000>; /*Decreased this to 10 kHz because I used low frequency pins like a n00b*/
         reg = <0>;
-        #gpio-cells = <2>; /*What does this do?*/
+        #gpio-cells = <2>;
         ngpios = <8>;
     };
 };
