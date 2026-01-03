@@ -1,3 +1,7 @@
+&default_transform {
+    col-offset = <10>;
+};
+
 &pinctrl {
     /* configuration for spi0 device, default state */
     spi0_default: spi0_default {
