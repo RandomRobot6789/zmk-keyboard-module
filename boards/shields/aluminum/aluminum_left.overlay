@@ -1,5 +1,4 @@
 /*Half of this should go in the board overlay, but I used different pins for SPI for the shift register for the left and right halves, and idk how to make the two different there*/
-/*Probably the right way is to have 2 separate boards inheriting from nice!nano but i don't want to go through the hassle; I'll leave this here until it becomes a problem*/
 
 &pinctrl {
     /* configuration for spi0 device, default state */
