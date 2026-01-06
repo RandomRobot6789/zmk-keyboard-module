@@ -69,3 +69,41 @@
         ngpios = <8>;
     };
 };
+
+/ {
+    leds {
+        compatible = "gpio-leds";
+        led_caps: led_0 {
+            gpios = <&shifter 0 GPIO_ACTIVE_HIGH>;
+            label = "Caps Lock";
+        };
+        led_num: led_1 {
+            gpios = <&shifter 1 GPIO_ACTIVE_HIGH>;
+            label = "Num Lock Off";
+        };
+        led_scroll: led_2 {
+            gpios = <&shifter 2 GPIO_ACTIVE_HIGH>;
+            label = "Scroll Lock";
+        };
+        led_split_disconnect: led_3 {
+            gpios = <&shifter 3 GPIO_ACTIVE_HIGH>;
+            label = "Split halves disconnected";
+        };
+        led_bt_disconnect: led_4 {
+            gpios = <&shifter 4 GPIO_ACTIVE_HIGH>;
+            label = "Bluetooth disconnected";
+        };
+        led_bt_pairing: led_5 {
+            gpios = <&shifter 5 GPIO_ACTIVE_HIGH>;
+            label = "Bluetooth pairing mode";
+        };
+        led_charging_right: led_6 {
+            gpios = <&shifter 6 GPIO_ACTIVE_HIGH>;
+            label = "Charging status";
+        };
+        led_battery_low_right: led_7 {
+            gpios = <&shifter 7 GPIO_ACTIVE_HIGH>;
+            label = "Low battery warning";
+        };
+    };
+};
