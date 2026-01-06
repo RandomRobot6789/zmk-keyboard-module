@@ -65,3 +65,29 @@
         ngpios = <8>;
     };
 };
+
+/ {
+    leds {
+        compatible = "gpio-leds";
+        led_layer_1: led_0 {
+            gpios = <&shifter 0 GPIO_ACTIVE_HIGH>;
+            label = "Layer 1 indicator";
+        };
+        led_layer_2: led_1 {
+            gpios = <&shifter 1 GPIO_ACTIVE_HIGH>;
+            label = "Layer 2 indicator";
+        };
+        led_layer_3: led_2 {
+            gpios = <&shifter 2 GPIO_ACTIVE_HIGH>;
+            label = "Layer 3 indicator";
+        };
+        led_charging_left: led_3 {
+            gpios = <&shifter 3 GPIO_ACTIVE_HIGH>;
+            label = "Charging status";
+        };
+        led_battery_low_left: led_4 {
+            gpios = <&shifter 4 GPIO_ACTIVE_HIGH>;
+            label = "Low battery warning";
+        };
+    };
+};
