@@ -134,22 +134,23 @@ static void update_hid_indicators(zmk_hid_indicators_t indicators) {
 #endif
 }
 
-static void update_battery_leds(uint8_t level, bool charging) {
+static void update_battery_leds(uint8_t level) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     // Right half
-    if (ARRAY_SIZE(right_leds) > RIGHT_LED_CHARGING) {
-        set_led(&right_leds[RIGHT_LED_CHARGING], charging);
-    }
+    // can't actually sense charging
+    // if (ARRAY_SIZE(right_leds) > RIGHT_LED_CHARGING) {
+    //     set_led(&right_leds[RIGHT_LED_CHARGING], charging);
+    // }
     if (ARRAY_SIZE(right_leds) > RIGHT_LED_LOW_BATTERY) {
-        set_led(&right_leds[RIGHT_LED_LOW_BATTERY], !charging && level <= LOW_BATTERY_THRESHOLD);
+        set_led(&right_leds[RIGHT_LED_LOW_BATTERY], level <= LOW_BATTERY_THRESHOLD);
     }
 #else
     // Left half
-    if (ARRAY_SIZE(left_leds) > LEFT_LED_CHARGING) {
-        set_led(&left_leds[LEFT_LED_CHARGING], charging);
-    }
+    // if (ARRAY_SIZE(left_leds) > LEFT_LED_CHARGING) {
+    //     set_led(&left_leds[LEFT_LED_CHARGING], charging);
+    // }
     if (ARRAY_SIZE(left_leds) > LEFT_LED_LOW_BATTERY) {
-        set_led(&left_leds[LEFT_LED_LOW_BATTERY], !charging && level <= LOW_BATTERY_THRESHOLD);
+        set_led(&left_leds[LEFT_LED_LOW_BATTERY], level <= LOW_BATTERY_THRESHOLD);
     }
 #endif
 }
@@ -191,7 +192,7 @@ static int status_led_battery_event_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
     
-    update_battery_leds(ev->state_of_charge, ev->usb_present);
+    update_battery_leds(ev->state_of_charge);
     return ZMK_EV_EVENT_BUBBLE;
 }
 
@@ -283,7 +284,7 @@ static int status_leds_init(void) {
     // Get initial battery state
 #if IS_ENABLED(CONFIG_ZMK_BATTERY)
     uint8_t battery_level = zmk_battery_state_of_charge();
-    update_battery_leds(battery_level, false);
+    update_battery_leds(battery_level);
 #endif
     
     LOG_INF("Status LEDs initialized");
