@@ -12,6 +12,7 @@
 #include <zmk/split/bluetooth/central.h>
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
+#include <zmk/keymap.h>
 
 #define ZMK_HID_INDICATOR_NUM_LOCK    (1 << 0)  // Bit 0
 #define ZMK_HID_INDICATOR_CAPS_LOCK   (1 << 1)  // Bit 1
