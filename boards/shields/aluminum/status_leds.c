@@ -13,7 +13,10 @@
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
-#include <zmk/hid.h>
+
+#define ZMK_HID_INDICATOR_NUM_LOCK    (1 << 0)  // Bit 0
+#define ZMK_HID_INDICATOR_CAPS_LOCK   (1 << 1)  // Bit 1
+#define ZMK_HID_INDICATOR_SCROLL_LOCK (1 << 2)  // Bit 2
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
