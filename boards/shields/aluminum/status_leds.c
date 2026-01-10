@@ -8,11 +8,10 @@
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/split_peripheral_status_changed.h>
-#include <zmk/hid_indicators.h>
+#include <zmk/hid_indicators_changed.h>
 #include <zmk/split/bluetooth/central.h>
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
-#include <zmk/keymap.h>
 
 #define ZMK_HID_INDICATOR_NUM_LOCK    (1 << 0)  // Bit 0
 #define ZMK_HID_INDICATOR_CAPS_LOCK   (1 << 1)  // Bit 1
@@ -104,6 +103,7 @@ enum right_led_index {
 };
 
 #define LOW_BATTERY_THRESHOLD 15
+#define HIGHEST_LAYER 3
 
 static void set_led(const struct gpio_dt_spec *led, bool state) {
     if (!device_is_ready(led->port)) {
@@ -112,25 +112,32 @@ static void set_led(const struct gpio_dt_spec *led, bool state) {
     gpio_pin_set_dt(led, state ? 1 : 0);
 }
 
+static uint8_t get_highest_layer(zmk_keymap_layers_state_t state) {
+    // Find the highest active layer from the bitmask
+    for (int8_t layer = HIGHEST_LAYER; layer >= 0; layer--) {
+        if (state & BIT(layer)) {
+            return layer;
+        }
+    }
+    return 0; // Default to layer 0
+}
+
 static void update_layer_leds(uint8_t layer) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    uint8_t layer = get_highest_layer(state);
     // We're on the central (right), update layer LEDs
-    if (ARRAY_SIZE(right_leds) >= 3) {
-        set_led(&right_leds[RIGHT_LED_LAYER1], layer == 1);
-        set_led(&right_leds[RIGHT_LED_LAYER2], layer == 2);
-        set_led(&right_leds[RIGHT_LED_LAYER3], layer == 3);
-    }
+    set_led(&right_leds[RIGHT_LED_LAYER1], layer == 1);
+    set_led(&right_leds[RIGHT_LED_LAYER2], layer == 2);
+    set_led(&right_leds[RIGHT_LED_LAYER3], layer == 3);
 #endif
 }
 
 static void update_hid_indicators(zmk_hid_indicators_t indicators) {
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     // HID indicators on left (peripheral)
-    if (ARRAY_SIZE(left_leds) >= 3) {
-        set_led(&left_leds[LEFT_LED_CAPS], indicators & ZMK_HID_INDICATOR_CAPS_LOCK);
-        set_led(&left_leds[LEFT_LED_NUM], !(indicators & ZMK_HID_INDICATOR_NUM_LOCK));
-        set_led(&left_leds[LEFT_LED_SCROLL], indicators & ZMK_HID_INDICATOR_SCROLL_LOCK);
-    }
+    set_led(&left_leds[LEFT_LED_CAPS], indicators & ZMK_HID_INDICATOR_CAPS_LOCK);
+    set_led(&left_leds[LEFT_LED_NUM], !(indicators & ZMK_HID_INDICATOR_NUM_LOCK));
+    set_led(&left_leds[LEFT_LED_SCROLL], indicators & ZMK_HID_INDICATOR_SCROLL_LOCK);
 #endif
 }
 
@@ -196,6 +203,18 @@ static int status_led_battery_event_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
+static int status_led_hid_indicators_event_listener(const zmk_event_t *eh) {
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    const struct zmk_hid_indicators_changed *ev = as_zmk_hid_indicators_changed(eh);
+    if (ev == NULL) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+    
+    update_hid_indicators(ev->indicators);
+#endif
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
 static int status_led_split_event_listener(const zmk_event_t *eh) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     const struct zmk_split_peripheral_status_changed *ev = 
@@ -238,6 +257,11 @@ ZMK_LISTENER(status_leds_ble, status_led_ble_event_listener);
 ZMK_SUBSCRIPTION(status_leds_ble, zmk_ble_active_profile_changed);
 #endif
 
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+ZMK_LISTENER(status_leds_hid_indicators, status_led_hid_indicators_event_listener);
+ZMK_SUBSCRIPTION(status_leds_hid_indicators, zmk_hid_indicators_changed);
+#endif
+
 static int status_leds_init(void) {
     int ret;
     
@@ -264,21 +288,16 @@ static int status_leds_init(void) {
             LOG_ERR("Failed to configure right LED %d: %d", i, ret);
         }
     }
-    
-    // Register HID indicator callback for peripheral
-#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-    zmk_hid_indicators_set_changed_callback(indicators_changed_callback);
-#endif
-    
+     
     // Initial state update - delay to allow other subsystems to init
     k_msleep(100);
     
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-    update_layer_leds(zmk_keymap_highest_layer_active());
+    update_layer_leds(BIT(0));
     update_connection_status();
 #else
     // Peripheral gets initial HID indicators
-    update_hid_indicators(zmk_hid_indicators_get_current_profile());
+    update_hid_indicators(0);
 #endif
     
     // Get initial battery state
