@@ -8,7 +8,7 @@
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/split_peripheral_status_changed.h>
-#include <zmk/hid_indicators_changed.h>
+#include <zmk/events/hid_indicators_changed.h>
 #include <zmk/split/bluetooth/central.h>
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
