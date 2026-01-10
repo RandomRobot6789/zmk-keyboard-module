@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2024 Custom
- * SPDX-License-Identifier: MIT
- */
-
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
