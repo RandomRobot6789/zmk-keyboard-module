@@ -163,12 +163,8 @@ static void update_battery_leds(uint8_t level) {
 #endif
 }
 
-static void update_connection_status(void) {
+static void update_main_connection_status(void) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-    // Check split connection status
-    bool split_connected = zmk_split_bt_peripheral_is_connected();
-    set_led(&right_leds[RIGHT_LED_SPLIT_DISCONN], !split_connected);
-
     // Check bluetooth host connection
     struct zmk_endpoint_instance endpoint = zmk_endpoints_selected();
     bool bt_connected = (endpoint.transport == ZMK_TRANSPORT_BLE) && 
@@ -180,6 +176,12 @@ static void update_connection_status(void) {
     bool pairing = (endpoint.transport == ZMK_TRANSPORT_BLE) && 
                        zmk_ble_active_profile_is_open() && !bt_connected;
     set_led(&right_leds[RIGHT_LED_PAIRING], pairing);
+#endif
+}
+
+static void update_peripheral_connection_status(bool peripheral_connected) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    set_led(&right_leds[RIGHT_LED_SPLIT_DISCONN], !peripheral_connected);
 #endif
 }
 
@@ -226,14 +228,14 @@ static int status_led_split_event_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
     
-    update_connection_status();
+    update_peripheral_connection_status(ev->connected);
     return ZMK_EV_EVENT_BUBBLE;
 }
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 static int status_led_ble_event_listener(const zmk_event_t *eh) {
-    update_connection_status();
+    update_main_connection_status();
     return ZMK_EV_EVENT_BUBBLE;
 }
 #endif
@@ -291,7 +293,8 @@ static int status_leds_init(void) {
     
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     update_layer_leds(BIT(0));
-    update_connection_status();
+    update_main_connection_status();
+    update_peripheral_connection_status(false);
 #else
     // Peripheral gets initial HID indicators
     update_hid_indicators(0);
