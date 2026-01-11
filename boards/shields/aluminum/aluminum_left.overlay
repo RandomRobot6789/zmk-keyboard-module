@@ -71,18 +71,23 @@
         compatible = "gpio-leds";
         led_caps_lock: led_0 {
             gpios = <&shifter 0 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_num_lock: led_1 {
             gpios = <&shifter 1 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_scroll_lock: led_2 {
             gpios = <&shifter 2 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_left_charging: led_3 {
             gpios = <&shifter 3 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_left_low_battery: led_4 {
             gpios = <&shifter 4 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
     };
 };
