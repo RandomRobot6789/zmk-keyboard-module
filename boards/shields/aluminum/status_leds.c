@@ -238,13 +238,13 @@ static int status_led_ble_event_listener(const zmk_event_t *eh) {
 
 
 // Register event listeners
-ZMK_LISTENER(status_leds_layer, status_led_layer_event_listener);
-ZMK_SUBSCRIPTION(status_leds_layer, zmk_layer_state_changed);
-
 ZMK_LISTENER(status_leds_battery, status_led_battery_event_listener);
 ZMK_SUBSCRIPTION(status_leds_battery, zmk_battery_state_changed);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+ZMK_LISTENER(status_leds_layer, status_led_layer_event_listener);
+ZMK_SUBSCRIPTION(status_leds_layer, zmk_layer_state_changed);
+
 ZMK_LISTENER(status_leds_split, status_led_split_event_listener);
 ZMK_SUBSCRIPTION(status_leds_split, zmk_split_peripheral_status_changed);
 
