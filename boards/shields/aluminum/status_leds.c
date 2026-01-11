@@ -237,12 +237,6 @@ static int status_led_ble_event_listener(const zmk_event_t *eh) {
 #endif
 
 
-
-// Indicator update callback
-static void indicators_changed_callback(zmk_hid_indicators_t indicators) {
-    update_hid_indicators(indicators);
-}
-
 // Register event listeners
 ZMK_LISTENER(status_leds_layer, status_led_layer_event_listener);
 ZMK_SUBSCRIPTION(status_leds_layer, zmk_layer_state_changed);
