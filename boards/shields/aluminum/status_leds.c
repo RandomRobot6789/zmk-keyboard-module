@@ -204,20 +204,20 @@ static int status_led_battery_event_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-static int status_led_hid_indicators_event_listener(const zmk_event_t *eh) {
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static int status_led_hid_indicators_event_listener(const zmk_event_t *eh) {
     const struct zmk_hid_indicators_changed *ev = as_zmk_hid_indicators_changed(eh);
     if (ev == NULL) {
         return ZMK_EV_EVENT_BUBBLE;
     }
     
     update_hid_indicators(ev->indicators);
-#endif
     return ZMK_EV_EVENT_BUBBLE;
 }
+#endif
 
-static int status_led_split_event_listener(const zmk_event_t *eh) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static int status_led_split_event_listener(const zmk_event_t *eh) {
     const struct zmk_split_peripheral_status_changed *ev = 
         as_zmk_split_peripheral_status_changed(eh);
     if (ev == NULL) {
@@ -225,16 +225,16 @@ static int status_led_split_event_listener(const zmk_event_t *eh) {
     }
     
     update_connection_status();
-#endif
     return ZMK_EV_EVENT_BUBBLE;
 }
+#endif
 
-static int status_led_ble_event_listener(const zmk_event_t *eh) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static int status_led_ble_event_listener(const zmk_event_t *eh) {
     update_connection_status();
-#endif
     return ZMK_EV_EVENT_BUBBLE;
 }
+#endif
 
 
 
