@@ -115,21 +115,21 @@ static void set_led(const struct gpio_dt_spec *led, bool state) {
 
 static uint8_t get_highest_layer(zmk_keymap_layers_state_t state) {
     // Find the highest active layer from the bitmask
-    for (int8_t layer = HIGHEST_LAYER; layer >= 0; layer--) {
-        if (state & BIT(layer)) {
-            return layer;
+    for (int8_t current_layer = HIGHEST_LAYER; current_layer >= 0; current_layer--) {
+        if (state & BIT(current_layer)) {
+            return current_layer;
         }
     }
     return 0; // Default to layer 0
 }
 
-static void update_layer_leds(uint8_t layer) {
+static void update_layer_leds(zmk_keymap_layers_state_t state) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-    uint8_t layer = get_highest_layer(state);
+    uint8_t current_layer = get_highest_layer(state);
     // We're on the central (right), update layer LEDs
-    set_led(&right_leds[RIGHT_LED_LAYER1], layer == 1);
-    set_led(&right_leds[RIGHT_LED_LAYER2], layer == 2);
-    set_led(&right_leds[RIGHT_LED_LAYER3], layer == 3);
+    set_led(&right_leds[RIGHT_LED_LAYER1], current_layer == 1);
+    set_led(&right_leds[RIGHT_LED_LAYER2], current_layer == 2);
+    set_led(&right_leds[RIGHT_LED_LAYER3], current_layer == 3);
 #endif
 }
 
@@ -190,7 +190,7 @@ static int status_led_layer_event_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
     
-    update_layer_leds(zmk_keymap_highest_layer_active());
+    update_layer_leds(ev->state);
     return ZMK_EV_EVENT_BUBBLE;
 }
 
