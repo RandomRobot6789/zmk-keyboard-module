@@ -18,7 +18,7 @@
 #define ZMK_HID_INDICATOR_CAPS_LOCK   (1 << 1)  // Bit 1
 #define ZMK_HID_INDICATOR_SCROLL_LOCK (1 << 2)  // Bit 2
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+LOG_MODULE_REGISTER(status_leds, CONFIG_ZMK_LOG_LEVEL);
 
 // LED definitions for left half (peripheral) - lock indicators
 #define LEFT_CAPS_LED_NODE DT_ALIAS(led_caps_lock)
