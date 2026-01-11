@@ -75,27 +75,35 @@
         compatible = "gpio-leds";
         led_layer1: led_0 {
             gpios = <&shifter 0 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_layer2: led_1 {
-            gpios = <&shifter 1 GPIO_ACTIVE_HIGH>;
+            gpios = <&shifter 1 GPIO_ACTIVE_HIGH>;\
+            status = "okay";
         };
         led_layer3: led_2 {
             gpios = <&shifter 2 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_split_disconnect: led_3 {
             gpios = <&shifter 3 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_bt_disconnect: led_4 {
             gpios = <&shifter 4 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_bt_pairing: led_5 {
             gpios = <&shifter 5 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_right_charging: led_6 {
             gpios = <&shifter 6 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
         led_right_low_battery: led_7 {
             gpios = <&shifter 7 GPIO_ACTIVE_HIGH>;
+            status = "okay";
         };
     };
 };
