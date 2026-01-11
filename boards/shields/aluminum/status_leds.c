@@ -184,6 +184,7 @@ static void update_connection_status(void) {
 }
 
 // Event handlers
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 static int status_led_layer_event_listener(const zmk_event_t *eh) {
     const struct zmk_layer_state_changed *ev = as_zmk_layer_state_changed(eh);
     if (ev == NULL) {
@@ -193,6 +194,7 @@ static int status_led_layer_event_listener(const zmk_event_t *eh) {
     update_layer_leds(ev->state);
     return ZMK_EV_EVENT_BUBBLE;
 }
+#endif
 
 static int status_led_battery_event_listener(const zmk_event_t *eh) {
     const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
