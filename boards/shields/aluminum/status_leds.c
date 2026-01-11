@@ -13,6 +13,7 @@
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
+#include <zmk/battery.h>
 
 #define ZMK_HID_INDICATOR_NUM_LOCK    (1 << 0)  // Bit 0
 #define ZMK_HID_INDICATOR_CAPS_LOCK   (1 << 1)  // Bit 1
@@ -123,24 +124,24 @@ static uint8_t get_highest_layer(zmk_keymap_layers_state_t state) {
     return 0; // Default to layer 0
 }
 
-static void update_layer_leds(zmk_keymap_layers_state_t state) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static void update_layer_leds(zmk_keymap_layers_state_t state) {
     uint8_t current_layer = get_highest_layer(state);
     // We're on the central (right), update layer LEDs
     set_led(&right_leds[RIGHT_LED_LAYER1], current_layer == 1);
     set_led(&right_leds[RIGHT_LED_LAYER2], current_layer == 2);
     set_led(&right_leds[RIGHT_LED_LAYER3], current_layer == 3);
-#endif
 }
+#endif
 
-static void update_hid_indicators(zmk_hid_indicators_t indicators) {
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static void update_hid_indicators(zmk_hid_indicators_t indicators) {
     // HID indicators on left (peripheral)
     set_led(&left_leds[LEFT_LED_CAPS], indicators & ZMK_HID_INDICATOR_CAPS_LOCK);
     set_led(&left_leds[LEFT_LED_NUM], !(indicators & ZMK_HID_INDICATOR_NUM_LOCK));
     set_led(&left_leds[LEFT_LED_SCROLL], indicators & ZMK_HID_INDICATOR_SCROLL_LOCK);
-#endif
 }
+#endif
 
 static void update_battery_leds(uint8_t level) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
@@ -163,8 +164,8 @@ static void update_battery_leds(uint8_t level) {
 #endif
 }
 
-static void update_main_connection_status(void) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static void update_main_connection_status(void) {
     // Check bluetooth host connection
     struct zmk_endpoint_instance endpoint = zmk_endpoints_selected();
     bool bt_connected = (endpoint.transport == ZMK_TRANSPORT_BLE) && 
@@ -176,14 +177,14 @@ static void update_main_connection_status(void) {
     bool pairing = (endpoint.transport == ZMK_TRANSPORT_BLE) && 
                        zmk_ble_active_profile_is_open() && !bt_connected;
     set_led(&right_leds[RIGHT_LED_PAIRING], pairing);
-#endif
 }
+#endif
 
-static void update_peripheral_connection_status(bool peripheral_connected) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static void update_peripheral_connection_status(bool peripheral_connected) {
     set_led(&right_leds[RIGHT_LED_SPLIT_DISCONN], !peripheral_connected);
-#endif
 }
+#endif
 
 // Event handlers
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
