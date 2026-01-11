@@ -17,8 +17,4 @@ config ZMK_SPLIT
 config SPI
     default y
 
-# Needed for status_leds peripheral HID indicator events
-config ZMK_HID_INDICATORS_CHANGED
-    default y
-
 endif
