@@ -17,4 +17,8 @@ config ZMK_SPLIT
 config SPI
     default y
 
+config ZMK_HID_INDICATORS
+    #Enable HID indicator support
+    default y
+
 endif
