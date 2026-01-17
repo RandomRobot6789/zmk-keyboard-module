@@ -22,21 +22,21 @@
 LOG_MODULE_REGISTER(status_leds, CONFIG_ZMK_LOG_LEVEL);
 
 // LED definitions for left half (peripheral) - lock indicators
-#define LEFT_CAPS_LED_NODE DT_ALIAS(led_caps_lock)
-#define LEFT_NUM_LED_NODE DT_ALIAS(led_num_lock)
-#define LEFT_SCROLL_LED_NODE DT_ALIAS(led_scroll_lock)
-#define LEFT_CHARGING_LED_NODE DT_ALIAS(led_left_charging)
-#define LEFT_LOW_BATTERY_LED_NODE DT_ALIAS(led_left_low_battery)
+#define LEFT_CAPS_LED_NODE DT_NODELABEL(led_caps_lock)
+#define LEFT_NUM_LED_NODE DT_NODELABEL(led_num_lock)
+#define LEFT_SCROLL_LED_NODE DT_NODELABEL(led_scroll_lock)
+#define LEFT_CHARGING_LED_NODE DT_NODELABEL(led_left_charging)
+#define LEFT_LOW_BATTERY_LED_NODE DT_NODELABEL(led_left_low_battery)
 
 // LED definitions for right half (central/master) - layer indicators
-#define RIGHT_LAYER1_LED_NODE DT_ALIAS(led_layer1)
-#define RIGHT_LAYER2_LED_NODE DT_ALIAS(led_layer2)
-#define RIGHT_LAYER3_LED_NODE DT_ALIAS(led_layer3)
-#define RIGHT_SPLIT_DISCONN_LED_NODE DT_ALIAS(led_split_disconnect)
-#define RIGHT_BT_DISCONN_LED_NODE DT_ALIAS(led_bt_disconnect)
-#define RIGHT_PAIRING_LED_NODE DT_ALIAS(led_bt_pairing)
-#define RIGHT_CHARGING_LED_NODE DT_ALIAS(led_right_charging)
-#define RIGHT_LOW_BATTERY_LED_NODE DT_ALIAS(led_right_low_battery)
+#define RIGHT_LAYER1_LED_NODE DT_NODELABEL(led_layer1)
+#define RIGHT_LAYER2_LED_NODE DT_NODELABEL(led_layer2)
+#define RIGHT_LAYER3_LED_NODE DT_NODELABEL(led_layer3)
+#define RIGHT_SPLIT_DISCONN_LED_NODE DT_NODELABEL(led_split_disconnect)
+#define RIGHT_BT_DISCONN_LED_NODE DT_NODELABEL(led_bt_disconnect)
+#define RIGHT_PAIRING_LED_NODE DT_NODELABEL(led_bt_pairing)
+#define RIGHT_CHARGING_LED_NODE DT_NODELABEL(led_right_charging)
+#define RIGHT_LOW_BATTERY_LED_NODE DT_NODELABEL(led_right_low_battery)
 
 // GPIO specs
 static const struct gpio_dt_spec left_leds[] = {
