@@ -59,7 +59,7 @@
         compatible = "zmk,gpio-595";
         status = "okay";
         gpio-controller;
-        spi-max-frequency = <10000>; /*Decreased this to 10 kHz because I used low frequency pins like a n00b*/
+        spi-max-frequency = <125000>; //minimum supported. I used low frequency pins like a n00b. Sources say they are likely to cause bluetooth interference over 10 kHz. I'm trying it anyway; if the radio behavior is poor when LEDs are changing, blame this
         reg = <0>;
         #gpio-cells = <2>;
         ngpios = <8>;
