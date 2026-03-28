@@ -97,7 +97,7 @@
             gpios = <&shifter 5 GPIO_ACTIVE_HIGH>;
             status = "okay";
         };
-        led_right_charging: led_6 {
+        led_right_battery_full: led_6 {
             gpios = <&shifter 6 GPIO_ACTIVE_HIGH>;
             status = "okay";
         };
