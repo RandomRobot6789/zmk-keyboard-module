@@ -91,7 +91,9 @@
             status = "okay";
         };
     };
+};
 
+/ {
     hid_indicators {
         compatible = "zmk,indicator-leds";
 
