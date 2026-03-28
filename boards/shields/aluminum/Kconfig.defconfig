@@ -21,4 +21,7 @@ config ZMK_HID_INDICATORS
     #Enable HID indicator support
     default y
 
+config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
+    default y
+
 endif
