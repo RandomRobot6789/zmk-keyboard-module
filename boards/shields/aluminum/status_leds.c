@@ -106,9 +106,7 @@ static void update_battery_leds() {
 //the only one of these that works is the main connection status; I need to fix the other two
 static void update_main_connection_status(void) {
     // Check bluetooth host connection
-    struct zmk_endpoint_instance endpoint = zmk_endpoints_selected();
-    bool bt_connected = (endpoint.transport == ZMK_TRANSPORT_BLE) && 
-                        zmk_ble_active_profile_is_connected();
+    bool bt_connected = zmk_ble_active_profile_is_connected();
     
     set_led(&right_leds[RIGHT_LED_BT_DISCONN], !bt_connected);
     
