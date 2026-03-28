@@ -112,4 +112,5 @@
             indicator = <HID_INDICATOR_SCROLL_LOCK>;
             leds = <&led_scroll_lock>;
         };
+    };
 };
