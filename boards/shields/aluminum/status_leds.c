@@ -111,8 +111,7 @@ static void update_main_connection_status(void) {
     set_led(&right_leds[RIGHT_LED_BT_DISCONN], !bt_connected);
     
     // Pairing mode (profile is open but not connected)
-    bool pairing = (endpoint.transport == ZMK_TRANSPORT_BLE) && 
-                       zmk_ble_active_profile_is_open() && !bt_connected;
+    bool pairing = zmk_ble_active_profile_is_open() && !bt_connected;
     set_led(&right_leds[RIGHT_LED_PAIRING], pairing);
 }
 
