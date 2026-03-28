@@ -24,7 +24,4 @@ config ZMK_HID_INDICATORS
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     default y
 
-config ZMK_ENDPOINTS
-    default y
-
 endif
