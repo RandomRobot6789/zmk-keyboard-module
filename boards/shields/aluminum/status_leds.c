@@ -180,7 +180,7 @@ static zmk_hid_indicators_t current_indicators = 0;
 
 static void update_hid_indicator_leds(zmk_hid_indicators_t indicators) {
     set_led(&left_leds[LEFT_LED_CAPS],   (indicators & HID_IND_CAPS_LOCK)   != 0);
-    set_led(&left_leds[LEFT_LED_NUM],    (indicators & HID_IND_NUM_LOCK)    != 0);
+    set_led(&left_leds[LEFT_LED_NUM],    (indicators & HID_IND_NUM_LOCK)    == 0);
     set_led(&left_leds[LEFT_LED_SCROLL], (indicators & HID_IND_SCROLL_LOCK) != 0);
 }
 
