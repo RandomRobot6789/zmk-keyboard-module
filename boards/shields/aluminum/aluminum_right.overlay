@@ -78,7 +78,7 @@
             status = "okay";
         };
         led_layer2: led_1 {
-            gpios = <&shifter 1 GPIO_ACTIVE_HIGH>;\
+            gpios = <&shifter 1 GPIO_ACTIVE_HIGH>;
             status = "okay";
         };
         led_layer3: led_2 {
