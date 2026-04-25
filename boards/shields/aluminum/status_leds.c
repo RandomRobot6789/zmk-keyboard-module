@@ -265,6 +265,9 @@ static int status_led_split_event_listener(const zmk_event_t *eh) {
 /* --- BLE host profile change (central only) --- */
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 static int status_led_ble_event_listener(const zmk_event_t *eh) {
+    if (as_zmk_ble_active_profile_changed(eh) == NULL) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
     update_main_connection_status();
     return ZMK_EV_EVENT_BUBBLE;
 }
