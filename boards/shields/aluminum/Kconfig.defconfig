@@ -20,4 +20,7 @@ config SPI
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     default y
 
+config ZMK_HID_INDICATORS
+    default y
+
 endif
