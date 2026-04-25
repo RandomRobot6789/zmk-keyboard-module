@@ -1,5 +1,4 @@
 #include "aluminum.dtsi"
-#include <dt-bindings/zmk/hid_indicators.h>
 
 &kscan0 {
     col-gpios
