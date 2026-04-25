@@ -92,25 +92,3 @@
         };
     };
 };
-
-/ {
-    hid_indicators {
-        compatible = "zmk,indicator-leds";
-
-
-        caps_lock_indicator: caps_lock {
-            indicator = <HID_INDICATOR_CAPS_LOCK>;
-            leds = <&led_caps_lock>;
-        };
-        num_lock_indicator: num_lock {
-            indicator = <HID_INDICATOR_NUM_LOCK>;
-            leds = <&led_num_lock>;
-            active-brightness = <0>;
-            inactive-brightness = <100>;
-        };
-        scroll_lock_indicator: scroll_lock {
-            indicator = <HID_INDICATOR_SCROLL_LOCK>;
-            leds = <&led_scroll_lock>;
-        };
-    };
-};
