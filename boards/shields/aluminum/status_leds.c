@@ -29,8 +29,10 @@
  *
  * Right half (central):
  *   led_layer1, led_layer2, led_layer3
- *   led_split_disconnect, led_bt_disconnect, led_bt_pairing
+ *   led_bt_profile, led_bt_disconnect, led_bt_pairing
  *   led_right_battery_full, led_right_low_battery
+ *
+ * led_bt_profile is OFF when BLE profile 0 is active, ON when profile 1 is active.
  */
 
 #include <zephyr/device.h>
@@ -42,7 +44,6 @@
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/events/ble_active_profile_changed.h>
-#include <zmk/events/split_peripheral_status_changed.h>
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
@@ -101,7 +102,7 @@ static const struct gpio_dt_spec right_leds[] = {
     GPIO_DT_SPEC_GET(DT_NODELABEL(led_layer1),             gpios),
     GPIO_DT_SPEC_GET(DT_NODELABEL(led_layer2),             gpios),
     GPIO_DT_SPEC_GET(DT_NODELABEL(led_layer3),             gpios),
-    GPIO_DT_SPEC_GET(DT_NODELABEL(led_split_disconnect),   gpios),
+    GPIO_DT_SPEC_GET(DT_NODELABEL(led_bt_profile),         gpios),  /* OFF=profile 0, ON=profile 1 */
     GPIO_DT_SPEC_GET(DT_NODELABEL(led_bt_disconnect),      gpios),
     GPIO_DT_SPEC_GET(DT_NODELABEL(led_bt_pairing),         gpios),
     GPIO_DT_SPEC_GET(DT_NODELABEL(led_right_battery_full), gpios),
@@ -112,7 +113,7 @@ enum right_led_index {
     RIGHT_LED_LAYER1 = 0,
     RIGHT_LED_LAYER2,
     RIGHT_LED_LAYER3,
-    RIGHT_LED_SPLIT_DISCONN,
+    RIGHT_LED_BT_PROFILE,   /* lit when BLE profile 1 is active */
     RIGHT_LED_BT_DISCONN,
     RIGHT_LED_PAIRING,
     RIGHT_LED_BATTERY_FULL,
@@ -205,10 +206,23 @@ static void update_battery_leds(void) {
 }
 
 /* =========================================================================
- * Central-only: BLE / split connection status LEDs
+ * Central-only: BLE profile and connection status LEDs
  * ========================================================================= */
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+
+/*
+ * Drive led_bt_profile from the active profile index.
+ *
+ * The index is read directly from the zmk_ble_active_profile_changed event
+ * payload (ev->index) in the event listener, so we never need to call a
+ * separate zmk_ble_active_profile_index() getter.
+ *
+ * Semantics: OFF = profile 0, ON = profile 1.
+ */
+static void update_bt_profile_led(uint8_t profile_index) {
+    set_led(&right_leds[RIGHT_LED_BT_PROFILE], profile_index == 1);
+}
 
 static void update_main_connection_status(void) {
     bool bt_connected = zmk_ble_active_profile_is_connected();
@@ -217,10 +231,6 @@ static void update_main_connection_status(void) {
     /* Pairing mode: profile slot is open (unbonded) but not yet connected */
     bool pairing = zmk_ble_active_profile_is_open() && !bt_connected;
     set_led(&right_leds[RIGHT_LED_PAIRING], pairing);
-}
-
-static void update_peripheral_connection_status(bool connected) {
-    set_led(&right_leds[RIGHT_LED_SPLIT_DISCONN], !connected);
 }
 
 #endif /* CONFIG_ZMK_SPLIT_ROLE_CENTRAL */
@@ -249,25 +259,21 @@ static int status_led_battery_event_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-/* --- Split peripheral connect/disconnect (central only) --- */
+/* --- BLE host profile change (central only) ---
+ *
+ * Handles both profile switching (ev->index tells us which profile is now
+ * active) and connection-state changes that ZMK re-fires as this event.
+ * Reading ev->index here is the correct, public way to obtain the active
+ * profile index without calling any internal ble.c helpers.
+ */
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-static int status_led_split_event_listener(const zmk_event_t *eh) {
-    const struct zmk_split_peripheral_status_changed *ev =
-        as_zmk_split_peripheral_status_changed(eh);
+static int status_led_ble_event_listener(const zmk_event_t *eh) {
+    const struct zmk_ble_active_profile_changed *ev =
+        as_zmk_ble_active_profile_changed(eh);
     if (ev == NULL) {
         return ZMK_EV_EVENT_BUBBLE;
     }
-    update_peripheral_connection_status(ev->connected);
-    return ZMK_EV_EVENT_BUBBLE;
-}
-#endif
-
-/* --- BLE host profile change (central only) --- */
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-static int status_led_ble_event_listener(const zmk_event_t *eh) {
-    if (as_zmk_ble_active_profile_changed(eh) == NULL) {
-        return ZMK_EV_EVENT_BUBBLE;
-    }
+    update_bt_profile_led(ev->index);
     update_main_connection_status();
     return ZMK_EV_EVENT_BUBBLE;
 }
@@ -305,9 +311,6 @@ ZMK_SUBSCRIPTION(status_leds_battery, zmk_battery_state_changed);
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 ZMK_LISTENER(status_leds_layer, status_led_layer_event_listener);
 ZMK_SUBSCRIPTION(status_leds_layer, zmk_layer_state_changed);
-
-ZMK_LISTENER(status_leds_split, status_led_split_event_listener);
-ZMK_SUBSCRIPTION(status_leds_split, zmk_split_peripheral_status_changed);
 
 ZMK_LISTENER(status_leds_ble, status_led_ble_event_listener);
 ZMK_SUBSCRIPTION(status_leds_ble, zmk_ble_active_profile_changed);
@@ -353,7 +356,14 @@ static int status_leds_init(void) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     update_layer_leds();
     update_main_connection_status();
-    update_peripheral_connection_status(false);
+
+    /*
+     * Assume profile 0 at init (LED off).  ZMK fires zmk_ble_active_profile_changed
+     * during startup after loading the persisted active_profile from flash, so
+     * the LED will self-correct within milliseconds of boot without any
+     * explicit getter call here.
+     */
+    update_bt_profile_led(0);
 #endif
 
     /*
